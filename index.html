@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <img src="#" alt="random gif">
+    <div class="search">
+        <input type="search" name="catsearch" id="catsearch" placeholder='Search for Cat Gifs Here'>
+        <button class="next">Next Gif</button>
+    </div>
+    <script>
+        //find img and button
+        const img = document.querySelector('img');
+        const button = document.querySelector('.next');
+        
+        //do initial search
+        fetch("https://api.giphy.com/v1/gifs/translate?api_key=aQDEurBt8nlgNPAD206RfBxnjscIylDV&s=cats", {mode: 'cors'})
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    img.src = response.data.images.original.url + new Date().getTime();
+                });
+        
+        //function for submitting for next gif
+        const nextGif = function(){
+            let searchVal = document.getElementById('catsearch').value;
+            console.log(searchVal);
+            //searchVal = searchVal.replace(/\s/g, "")
+            let joined = "https://api.giphy.com/v1/gifs/translate?api_key=aQDEurBt8nlgNPAD206RfBxnjscIylDV&s=" + searchVal;
+            console.log(joined);
+            
+
+            if(searchVal === ""){
+                console.log("if statement")
+                fetch("https://api.giphy.com/v1/gifs/translate?api_key=aQDEurBt8nlgNPAD206RfBxnjscIylDV&s=cats", {mode: 'cors'})
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    console.log(response);
+                    img.src = response.data.images.original.url + new Date().getTime();
+                });
+            } else {
+                console.log("else statement");
+                fetch(joined, {mode: 'cors'})
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(response) {
+                        console.log(response);
+                        img.src = response.data.images.original.url + "?" + new Date().getTime();
+                    })
+                    .catch(function(error) {
+                        console.log("this is the catch: " + error);
+                        img.src = "https://images-cdn.ubuy.co.in/634d0cb9eb11f24444048d51-hang-in-there-baby-retro-hang-in-there.jpg";
+                        console.error(error);
+                    });
+            }
+            
+        }
+        button.addEventListener('click', nextGif);
+      </script>      
+</body>
+</html>
